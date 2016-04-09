@@ -8,10 +8,19 @@ namespace Test
 {
 	class Program
 	{
+		static AsmScript.Object Print(List<AsmScript.Object> parms) {
+			Console.WriteLine((parms[0] as AsmScript.StringObject).Value);
+
+			return null;
+		}
+
 		static void Main(string[] args)
 		{
 			AsmScript.Script script = new AsmScript.Script();
 			script.Load("test.asm");
+
+			script.RegistryFunction("Print", Print);
+			script.Execute();
 		}
 	}
 }

@@ -38,7 +38,7 @@ namespace AsmScript {
 				if (lines.Length > 1)
 					for (int i = 1; i < lines.Length; i++)
 						arg += lines[i] + " ";
-				arg.Trim();
+				arg = arg.Trim();
 
 				Token token = new Token();
 				token.parms = new List<Object>();
@@ -63,7 +63,7 @@ namespace AsmScript {
 						double RealValue;
 
 						if (arg.First() == '\"' && arg.Last() == '\"') {
-							token.parms.Add(new StringObject() { Value = arg });
+							token.parms.Add(new StringObject() { Value = arg.Trim('\"') });
 						}
 						else if (int.TryParse(it, out IntValue)) {
 							token.parms.Add(new IntegerObject() { Value = IntValue });

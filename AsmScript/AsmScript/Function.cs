@@ -18,7 +18,7 @@ namespace AsmScript
 	}
 
 	public class NetFunction : Function {
-		public delegate Object FuncDel(params Object[] parms);
+		public delegate Object FuncDel(List<Object> parms);
 
 		public FuncDel Impl;
 
