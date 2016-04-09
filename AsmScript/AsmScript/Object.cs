@@ -29,19 +29,34 @@ namespace AsmScript {
 		public long Value;
 
 		public override void Mov(Object Other) {
-			Value = (Other as IntegerObject).Value;
+			if (Other is IntegerObject)
+				Value = (Other as IntegerObject).Value;
+			else if (Other is RealObject)
+				Value = (long)(Other as RealObject).Value;
 		}
 		public override void Add(Object Other) {
-			Value += (Other as IntegerObject).Value;
+			if (Other is IntegerObject)
+				Value += (Other as IntegerObject).Value;
+			else if (Other is RealObject)
+				Value += (long)(Other as RealObject).Value;
 		}
 		public override void Sub(Object Other) {
-			Value -= (Other as IntegerObject).Value;
+			if (Other is IntegerObject)
+				Value -= (Other as IntegerObject).Value;
+			else if (Other is RealObject)
+				Value -= (long)(Other as RealObject).Value;
 		}
 		public override void Mul(Object Other) {
-			Value *= (Other as IntegerObject).Value;
+			if (Other is IntegerObject)
+				Value *= (Other as IntegerObject).Value;
+			else if (Other is RealObject)
+				Value *= (long)(Other as RealObject).Value;
 		}
 		public override void Div(Object Other) {
-			Value /= (Other as IntegerObject).Value;
+			if (Other is IntegerObject)
+				Value /= (Other as IntegerObject).Value;
+			else if (Other is RealObject)
+				Value /= (long)(Other as RealObject).Value;
 		}
 	}
 
@@ -49,19 +64,34 @@ namespace AsmScript {
 		public double Value;
 
 		public override void Mov(Object Other) {
-			Value = (Other as RealObject).Value;
+			if (Other is IntegerObject)
+				Value = (Other as IntegerObject).Value;
+			else if (Other is RealObject)
+				Value = (Other as RealObject).Value;
 		}
 		public override void Add(Object Other) {
-			Value += (Other as RealObject).Value;
+			if (Other is IntegerObject)
+				Value += (Other as IntegerObject).Value;
+			else if (Other is RealObject)
+				Value += (Other as RealObject).Value;
 		}
 		public override void Sub(Object Other) {
-			Value -= (Other as RealObject).Value;
+			if (Other is IntegerObject)
+				Value -= (Other as IntegerObject).Value;
+			else if (Other is RealObject)
+				Value -= (Other as RealObject).Value;
 		}
 		public override void Mul(Object Other) {
-			Value *= (Other as RealObject).Value;
+			if (Other is IntegerObject)
+				Value *= (Other as IntegerObject).Value;
+			else if (Other is RealObject)
+				Value *= (Other as RealObject).Value;
 		}
 		public override void Div(Object Other) {
-			Value /= (Other as RealObject).Value;
+			if (Other is IntegerObject)
+				Value /= (Other as IntegerObject).Value;
+			else if (Other is RealObject)
+				Value /= (Other as RealObject).Value;
 		}
 	}
 
@@ -69,10 +99,20 @@ namespace AsmScript {
 		public string Value;
 
 		public override void Mov(Object Other) {
-			Value = (Other as StringObject).Value;
+			if (Other is IntegerObject)
+				Value = (Other as IntegerObject).Value.ToString();
+			else if (Other is RealObject)
+				Value = (Other as RealObject).Value.ToString();
+			else if(Other is StringObject)
+				Value = (Other as StringObject).Value;
 		}
 		public override void Add(Object Other) {
-			Value += (Other as StringObject).Value;
+			if (Other is IntegerObject)
+				Value += (Other as IntegerObject).Value.ToString();
+			else if (Other is RealObject)
+				Value += (Other as RealObject).Value.ToString();
+			else if (Other is StringObject)
+				Value += (Other as StringObject).Value;
 		}
 	}
 }
