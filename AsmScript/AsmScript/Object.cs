@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace AsmScript {
 	public class Object {
+		public string Name { get; set; }
+
 		public virtual void Add(Object Other) {
 			throw new NotImplementedException();
 		}
@@ -19,11 +21,7 @@ namespace AsmScript {
 			throw new NotImplementedException();
 		}
 	}
-
-	public class FunctionObject : Object {
-		public Function Value;
-	}
-
+	
 	public class IntegerObject : Object{
 		public long Value;
 
