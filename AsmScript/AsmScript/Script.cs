@@ -10,6 +10,8 @@ namespace AsmScript
 	public class Script {
 		private List<Function> _functions = new List<Function>();
 
+		private Object _efr = null;
+
 		public Script() {
 
 		}
@@ -20,7 +22,7 @@ namespace AsmScript
 
 		public void Load(string filename) {
 			try {
-				List<Token> tokens = Parser.Tokenization(File.ReadAllLines(filename));
+				List<Token> tokens = Parser.Tokenization(File.ReadAllLines(filename, Encoding.UTF8));
 
 				int State = 0; // 0 : NONE, 1 : FUNC
 				AsmFunction temp = new AsmFunction();
@@ -54,17 +56,24 @@ namespace AsmScript
 			}
 		}
 
-		public void Execute() {
+		public Object Execute() {
 			var func = _functions.Find((x) => { return x.Name == "Main"; });
 
 			if(func != null) {
 				if(func is AsmFunction) {
-					RunCode(func);
+					return RunCode(func);
 				}
 			}
+
+			return null;
 		}
 
-		private void RunCode(Function function, List<Object> parms = null) {
+		public Object RunCode(Function function, List<Object> parms = null) {
+			if(parms != null)
+				for (int i = 0; i < parms.Count; i++)
+					if (parms[i].Name == "efr")
+						parms[i] = _efr;
+
 			if(function is AsmFunction) {
 				List<Object> args = new List<Object>();
 
@@ -96,11 +105,23 @@ namespace AsmScript
 
 						args.Clear();
 					}
+					else if(token.cmd == Commands.RET) {
+						if (token.parms.Count == 0) {
+							_efr = null;
+							return null;
+						}
+						else {
+							_efr = token.parms[0];
+							return token.parms[0];
+						}
+					}
 				}
 			}
 			else if(function is NetFunction) {
-				(function as NetFunction).Impl(parms);
+				return (function as NetFunction).Impl(parms);
 			}
+
+			return null;
 		}
 	}
 }

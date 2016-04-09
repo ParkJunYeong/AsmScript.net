@@ -9,6 +9,8 @@ namespace AsmScript {
 		PUSH,
 		CALL,
 
+		RET,
+
 		MOV,
 		ADD,
 		SUB,
@@ -46,6 +48,8 @@ namespace AsmScript {
 				switch(lines[0].ToLower()) {
 					case "push": token.cmd = Commands.PUSH; break;
 					case "call": token.cmd = Commands.CALL; break;
+
+					case "ret": token.cmd = Commands.RET; break;
 
 					case "mov": token.cmd = Commands.MOV; break;
 					case "add": token.cmd = Commands.ADD; break;
