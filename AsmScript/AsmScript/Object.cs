@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 namespace AsmScript {
 	public class Object {
 		public string Name { get; set; }
-
+		
+		public virtual void Mov(Object Other) {
+			throw new NotImplementedException();
+		}
 		public virtual void Add(Object Other) {
 			throw new NotImplementedException();
 		}
@@ -25,6 +28,9 @@ namespace AsmScript {
 	public class IntegerObject : Object{
 		public long Value;
 
+		public override void Mov(Object Other) {
+			Value = (Other as IntegerObject).Value;
+		}
 		public override void Add(Object Other) {
 			Value += (Other as IntegerObject).Value;
 		}
@@ -42,6 +48,9 @@ namespace AsmScript {
 	public class RealObject : Object {
 		public double Value;
 
+		public override void Mov(Object Other) {
+			Value = (Other as RealObject).Value;
+		}
 		public override void Add(Object Other) {
 			Value += (Other as RealObject).Value;
 		}
@@ -59,6 +68,9 @@ namespace AsmScript {
 	public class StringObject : Object {
 		public string Value;
 
+		public override void Mov(Object Other) {
+			Value = (Other as StringObject).Value;
+		}
 		public override void Add(Object Other) {
 			Value += (Other as StringObject).Value;
 		}

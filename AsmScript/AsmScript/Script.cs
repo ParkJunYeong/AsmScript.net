@@ -77,7 +77,28 @@ namespace AsmScript
 			if(function is AsmFunction) {
 				List<Object> args = new List<Object>();
 
+				List<Object> vars = new List<Object>();
+
 				foreach(var token in (function as AsmFunction).Code) {
+					if(token.cmd == Commands.VARINT) {
+						vars.Add(new IntegerObject() { Name = token.parms[0].Name });
+					}
+					else if(token.cmd == Commands.VARREAL) {
+						vars.Add(new RealObject() { Name = token.parms[0].Name });
+					}
+					else if(token.cmd == Commands.VARSTRING) {
+						vars.Add(new StringObject() { Name = token.parms[0].Name });
+					}
+					else {
+						for(int i = 0; i < token.parms.Count; i++) {
+							var v = vars.Find((x) => { return x.Name == token.parms[i].Name; });
+
+							if(v != null) {
+								token.parms[i] = v;
+							}
+						}
+					}
+
 					if(token.cmd == Commands.ADD) {
 						token.parms[0].Add(token.parms[1]);
 					}
@@ -91,7 +112,7 @@ namespace AsmScript
 						token.parms[0].Div(token.parms[1]);
 					}
 					else if (token.cmd == Commands.MOV) {
-						token.parms[0] = token.parms[1];
+						token.parms[0].Mov(token.parms[1]);
 					}
 					else if(token.cmd == Commands.PUSH) {
 						args.Add(token.parms[0]);

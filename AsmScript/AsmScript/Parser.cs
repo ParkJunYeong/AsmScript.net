@@ -19,6 +19,10 @@ namespace AsmScript {
 
 		FUNC,
 		END,
+
+		VARINT,
+		VARREAL,
+		VARSTRING
 	}
 
 	public struct Token {
@@ -59,6 +63,10 @@ namespace AsmScript {
 
 					case "func": token.cmd = Commands.FUNC; break;
 					case "end": token.cmd = Commands.END; break;
+
+					case "varint": token.cmd = Commands.VARINT; break;
+					case "varreal": token.cmd = Commands.VARREAL; break;
+					case "varstring": token.cmd = Commands.VARSTRING; break;
 				}
 
 				if(arg != string.Empty) {
@@ -66,8 +74,8 @@ namespace AsmScript {
 						int IntValue;
 						double RealValue;
 
-						if (arg.First() == '\"' && arg.Last() == '\"') {
-							token.parms.Add(new StringObject() { Value = arg.Trim('\"') });
+						if ((it.Trim()).First() == '\"' && (it.Trim()).Last() == '\"') {
+							token.parms.Add(new StringObject() { Value = (it.Trim()).Trim('\"') });
 						}
 						else if (int.TryParse(it, out IntValue)) {
 							token.parms.Add(new IntegerObject() { Value = IntValue });
@@ -76,7 +84,7 @@ namespace AsmScript {
 							token.parms.Add(new RealObject() { Value = RealValue });
 						}
 						else {
-							token.parms.Add(new Object() { Name = arg });
+							token.parms.Add(new Object() { Name = it });
 						}
 					}
 				}
