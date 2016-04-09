@@ -10,6 +10,8 @@ namespace Test
 	{
 		static void Main(string[] args)
 		{
+			AsmScript.Script script = new AsmScript.Script();
+			script.Load("test.asm");
 		}
 	}
 }

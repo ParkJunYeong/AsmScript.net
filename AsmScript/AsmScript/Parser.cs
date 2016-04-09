@@ -14,6 +14,9 @@ namespace AsmScript {
 		SUB,
 		MUL,
 		DIV,
+
+		FUNC,
+		END,
 	}
 
 	public struct Token {
@@ -23,10 +26,12 @@ namespace AsmScript {
 	}
 
 	class Parser {
-		static List<Token> Tokenization(string[] code) {
+		static public List<Token> Tokenization(string[] code) {
 			List<Token> Ret = new List<Token>();
 
 			foreach(string line in code) {
+				if (line == string.Empty) continue;
+
 				string[] lines = line.Split(' ');
 				string arg = string.Empty;
 
@@ -36,8 +41,9 @@ namespace AsmScript {
 				arg.Trim();
 
 				Token token = new Token();
+				token.parms = new List<Object>();
 
-				switch(lines[0]) {
+				switch(lines[0].ToLower()) {
 					case "push": token.cmd = Commands.PUSH; break;
 					case "call": token.cmd = Commands.CALL; break;
 
@@ -46,23 +52,28 @@ namespace AsmScript {
 					case "sub": token.cmd = Commands.SUB; break;
 					case "mul": token.cmd = Commands.MUL; break;
 					case "div": token.cmd = Commands.DIV; break;
+
+					case "func": token.cmd = Commands.FUNC; break;
+					case "end": token.cmd = Commands.END; break;
 				}
 
-				foreach(var it in arg.Split(',')) {
-					int IntValue;
-					double RealValue;
+				if(arg != string.Empty) {
+					foreach (var it in arg.Split(',')) {
+						int IntValue;
+						double RealValue;
 
-					if (arg.First() == '\"' && arg.Last() == '\"') {
-						token.parms.Add(new StringObject() { Value = arg });
-					}
-					else if (int.TryParse(it, out IntValue)) {
-						token.parms.Add(new IntegerObject() { Value = IntValue });
-					}
-					else if(double.TryParse(it, out RealValue)) {
-						token.parms.Add(new RealObject() { Value = RealValue });
-					}
-					else {
-						token.parms.Add(new Object() { Name = arg });
+						if (arg.First() == '\"' && arg.Last() == '\"') {
+							token.parms.Add(new StringObject() { Value = arg });
+						}
+						else if (int.TryParse(it, out IntValue)) {
+							token.parms.Add(new IntegerObject() { Value = IntValue });
+						}
+						else if (double.TryParse(it, out RealValue)) {
+							token.parms.Add(new RealObject() { Value = RealValue });
+						}
+						else {
+							token.parms.Add(new Object() { Name = arg });
+						}
 					}
 				}
 

@@ -26,6 +26,6 @@ namespace AsmScript
 	}
 
 	public class AsmFunction : Function {
-
+		public List<Token> Code = new List<Token>();
 	}
 }
