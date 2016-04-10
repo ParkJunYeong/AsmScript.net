@@ -23,6 +23,18 @@ namespace AsmScript {
 		public virtual void Div(Object Other) {
 			throw new NotImplementedException();
 		}
+
+		public virtual string ToStr() {
+			return Name;
+		}
+
+		public virtual long ToInt() {
+			throw new NotImplementedException();
+		}
+
+		public virtual double ToReal() {
+			throw new NotImplementedException();
+		}
 	}
 	
 	public class IntegerObject : Object{
@@ -57,6 +69,18 @@ namespace AsmScript {
 				Value /= (Other as IntegerObject).Value;
 			else if (Other is RealObject)
 				Value /= (long)(Other as RealObject).Value;
+		}
+
+		public override string ToStr() {
+			return Value.ToString();
+		}
+
+		public override long ToInt() {
+			return Value;
+		}
+
+		public override double ToReal() {
+			return Value;
 		}
 	}
 
@@ -93,26 +117,40 @@ namespace AsmScript {
 			else if (Other is RealObject)
 				Value /= (Other as RealObject).Value;
 		}
+
+		public override string ToStr() {
+			return Value.ToString();
+		}
+
+		public override long ToInt() {
+			return (long)Value;
+		}
+
+		public override double ToReal() {
+			return Value;
+		}
 	}
 
 	public class StringObject : Object {
 		public string Value;
 
 		public override void Mov(Object Other) {
-			if (Other is IntegerObject)
-				Value = (Other as IntegerObject).Value.ToString();
-			else if (Other is RealObject)
-				Value = (Other as RealObject).Value.ToString();
-			else if(Other is StringObject)
-				Value = (Other as StringObject).Value;
+			Value = Other.ToStr();
 		}
 		public override void Add(Object Other) {
-			if (Other is IntegerObject)
-				Value += (Other as IntegerObject).Value.ToString();
-			else if (Other is RealObject)
-				Value += (Other as RealObject).Value.ToString();
-			else if (Other is StringObject)
-				Value += (Other as StringObject).Value;
+			Value += Other.ToStr();
+		}
+
+		public override string ToStr() {
+			return Value;
+		}
+
+		public override long ToInt() {
+			return Convert.ToInt64(Value);
+		}
+
+		public override double ToReal() {
+			return Convert.ToDouble(Value);
 		}
 	}
 }

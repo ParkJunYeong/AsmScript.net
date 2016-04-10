@@ -9,7 +9,7 @@ namespace Test
 	class Program
 	{
 		static AsmScript.Object Print(List<AsmScript.Object> parms) {
-			Console.WriteLine((parms[0] as AsmScript.StringObject).Value);
+			Console.WriteLine(parms[0].ToStr());
 
 			return null;
 		}

@@ -84,7 +84,7 @@ namespace AsmScript {
 							token.parms.Add(new RealObject() { Value = RealValue });
 						}
 						else {
-							token.parms.Add(new Object() { Name = it });
+							token.parms.Add(new Object() { Name = it.Trim() });
 						}
 					}
 				}

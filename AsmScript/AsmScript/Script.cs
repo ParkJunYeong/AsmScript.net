@@ -69,11 +69,6 @@ namespace AsmScript
 		}
 
 		public Object RunCode(Function function, List<Object> parms = null) {
-			if(parms != null)
-				for (int i = 0; i < parms.Count; i++)
-					if (parms[i].Name == "efr")
-						parms[i] = _efr;
-
 			if(function is AsmFunction) {
 				List<Object> args = new List<Object>();
 
@@ -82,20 +77,31 @@ namespace AsmScript
 				foreach(var token in (function as AsmFunction).Code) {
 					if(token.cmd == Commands.VARINT) {
 						vars.Add(new IntegerObject() { Name = token.parms[0].Name });
+
+						if (token.parms.Count > 1)
+							vars.Last().Mov(parms[(int)token.parms[1].ToInt() - 1]);
 					}
 					else if(token.cmd == Commands.VARREAL) {
 						vars.Add(new RealObject() { Name = token.parms[0].Name });
+
+						if (token.parms.Count > 1)
+							vars.Last().Mov(parms[(int)token.parms[1].ToInt() - 1]);
 					}
 					else if(token.cmd == Commands.VARSTRING) {
 						vars.Add(new StringObject() { Name = token.parms[0].Name });
+
+						if (token.parms.Count > 1)
+							vars.Last().Mov(parms[(int)token.parms[1].ToInt() - 1]);
 					}
 					else {
 						for(int i = 0; i < token.parms.Count; i++) {
 							var v = vars.Find((x) => { return x.Name == token.parms[i].Name; });
 
-							if(v != null) {
+							if (v != null) {
 								token.parms[i] = v;
 							}
+							else if (token.parms[i].Name == "efr")
+								token.parms[i] = _efr;
 						}
 					}
 
