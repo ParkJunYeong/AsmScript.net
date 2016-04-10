@@ -58,7 +58,7 @@ namespace AsmScript
 				}
 				else if(token.cmd == Commands.IMPORT) {
 					if(State == 0) {
-						if (token.parms[0].ToStr().LastIndexOf('.') != -1)
+						if (token.parms[0].ToStr().LastIndexOf('.') != -1 && System.IO.Path.GetExtension(token.parms[0].ToStr()) == ".dll")
 							_Load(token.parms[0].ToStr());
 						else
 							_Load(token.parms[0].ToStr() + ".asm");
