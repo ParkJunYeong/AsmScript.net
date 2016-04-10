@@ -16,13 +16,17 @@ namespace AsmScript {
 		SUB,
 		MUL,
 		DIV,
+		MOD,
 
 		FUNC,
 		END,
 
 		VARINT,
 		VARREAL,
-		VARSTRING
+		VARSTRING,
+
+		IMPORT,
+		NATIVE,
 	}
 
 	public struct Token {
@@ -60,6 +64,7 @@ namespace AsmScript {
 					case "sub": token.cmd = Commands.SUB; break;
 					case "mul": token.cmd = Commands.MUL; break;
 					case "div": token.cmd = Commands.DIV; break;
+					case "mod": token.cmd = Commands.MOD; break;
 
 					case "func": token.cmd = Commands.FUNC; break;
 					case "end": token.cmd = Commands.END; break;
@@ -67,6 +72,9 @@ namespace AsmScript {
 					case "varint": token.cmd = Commands.VARINT; break;
 					case "varreal": token.cmd = Commands.VARREAL; break;
 					case "varstring": token.cmd = Commands.VARSTRING; break;
+
+					case "import": token.cmd = Commands.IMPORT; break;
+					case "native": token.cmd = Commands.NATIVE; break;
 				}
 
 				if(arg != string.Empty) {

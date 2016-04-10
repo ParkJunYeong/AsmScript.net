@@ -23,6 +23,9 @@ namespace AsmScript {
 		public virtual void Div(Object Other) {
 			throw new NotImplementedException();
 		}
+		public virtual void Mod(Object Other) {
+			throw new NotImplementedException();
+		}
 
 		public virtual string ToStr() {
 			return Name;
@@ -41,34 +44,28 @@ namespace AsmScript {
 		public long Value;
 
 		public override void Mov(Object Other) {
-			if (Other is IntegerObject)
-				Value = (Other as IntegerObject).Value;
-			else if (Other is RealObject)
-				Value = (long)(Other as RealObject).Value;
+			if (Other is IntegerObject || Other is RealObject)
+				Value = Other.ToInt();
 		}
 		public override void Add(Object Other) {
-			if (Other is IntegerObject)
-				Value += (Other as IntegerObject).Value;
-			else if (Other is RealObject)
-				Value += (long)(Other as RealObject).Value;
+			if (Other is IntegerObject || Other is RealObject)
+				Value += Other.ToInt();
 		}
 		public override void Sub(Object Other) {
-			if (Other is IntegerObject)
-				Value -= (Other as IntegerObject).Value;
-			else if (Other is RealObject)
-				Value -= (long)(Other as RealObject).Value;
+			if (Other is IntegerObject || Other is RealObject)
+				Value -= Other.ToInt();
 		}
 		public override void Mul(Object Other) {
-			if (Other is IntegerObject)
-				Value *= (Other as IntegerObject).Value;
-			else if (Other is RealObject)
-				Value *= (long)(Other as RealObject).Value;
+			if (Other is IntegerObject || Other is RealObject)
+				Value *= Other.ToInt();
 		}
 		public override void Div(Object Other) {
-			if (Other is IntegerObject)
-				Value /= (Other as IntegerObject).Value;
-			else if (Other is RealObject)
-				Value /= (long)(Other as RealObject).Value;
+			if (Other is IntegerObject || Other is RealObject)
+				Value /= Other.ToInt();
+		}
+		public override void Mod(Object Other) {
+			if (Other is IntegerObject || Other is RealObject)
+				Value %= Other.ToInt();
 		}
 
 		public override string ToStr() {
@@ -88,34 +85,28 @@ namespace AsmScript {
 		public double Value;
 
 		public override void Mov(Object Other) {
-			if (Other is IntegerObject)
-				Value = (Other as IntegerObject).Value;
-			else if (Other is RealObject)
-				Value = (Other as RealObject).Value;
+			if (Other is IntegerObject || Other is RealObject)
+				Value = Other.ToInt();
 		}
 		public override void Add(Object Other) {
-			if (Other is IntegerObject)
-				Value += (Other as IntegerObject).Value;
-			else if (Other is RealObject)
-				Value += (Other as RealObject).Value;
+			if (Other is IntegerObject || Other is RealObject)
+				Value += Other.ToInt();
 		}
 		public override void Sub(Object Other) {
-			if (Other is IntegerObject)
-				Value -= (Other as IntegerObject).Value;
-			else if (Other is RealObject)
-				Value -= (Other as RealObject).Value;
+			if (Other is IntegerObject || Other is RealObject)
+				Value -= Other.ToInt();
 		}
 		public override void Mul(Object Other) {
-			if (Other is IntegerObject)
-				Value *= (Other as IntegerObject).Value;
-			else if (Other is RealObject)
-				Value *= (Other as RealObject).Value;
+			if (Other is IntegerObject || Other is RealObject)
+				Value *= Other.ToInt();
 		}
 		public override void Div(Object Other) {
-			if (Other is IntegerObject)
-				Value /= (Other as IntegerObject).Value;
-			else if (Other is RealObject)
-				Value /= (Other as RealObject).Value;
+			if (Other is IntegerObject || Other is RealObject)
+				Value /= Other.ToInt();
+		}
+		public override void Mod(Object Other) {
+			if (Other is IntegerObject || Other is RealObject)
+				Value %= Other.ToInt();
 		}
 
 		public override string ToStr() {

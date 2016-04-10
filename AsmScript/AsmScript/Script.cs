@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,36 +21,53 @@ namespace AsmScript
 			_functions.Add(new NetFunction() { Name = name, Impl = function });
 		}
 
-		public void Load(string filename) {
-			try {
-				List<Token> tokens = Parser.Tokenization(File.ReadAllLines(filename, Encoding.UTF8));
+		private void _Load(string filename) {
+			List<Token> tokens = Parser.Tokenization(File.ReadAllLines(filename, Encoding.UTF8));
 
-				int State = 0; // 0 : NONE, 1 : FUNC
-				AsmFunction temp = new AsmFunction();
+			int State = 0; // 0 : NONE, 1 : FUNC
+			AsmFunction temp = new AsmFunction();
 
-				foreach (Token token in tokens) {
-					if (token.cmd == Commands.FUNC) {
-						if (State == 0) {
-							State = 1;
+			foreach (Token token in tokens) {
+				if (token.cmd == Commands.FUNC) {
+					if (State == 0) {
+						State = 1;
 
-							temp.Name = token.parms[0].Name;
-							continue;
-						}
-					}
-					else if (token.cmd == Commands.END) {
-						if (State == 1) {
-							_functions.Add(temp);
-							temp = new AsmFunction();
-
-							State = 0;
-							continue;
-						}
-					}
-
-					if (State == 1) {
-						temp.Code.Add(token);
+						temp.Name = token.parms[0].Name;
+						continue;
 					}
 				}
+				else if (token.cmd == Commands.END) {
+					if (State == 1) {
+						_functions.Add(temp);
+						temp = new AsmFunction();
+
+						State = 0;
+						continue;
+					}
+				}
+				else if(token.cmd == Commands.IMPORT) {
+					if(State == 0) {
+						if (token.parms[0].ToStr().LastIndexOf('.') != -1)
+							_Load(token.parms[0].ToStr());
+						else
+							_Load(token.parms[0].ToStr() + ".asm");
+					}
+
+					continue;
+				}
+
+				if (State == 1) {
+					temp.Code.Add(token);
+				}
+			}
+		}
+
+		public void Load(string filename) {
+			try {
+				_functions.Clear();
+				_efr = null;
+
+				_Load(filename);
 			}
 			catch (Exception e) {
 				Console.Write(e.Message);
@@ -120,6 +138,9 @@ namespace AsmScript
 					else if (token.cmd == Commands.MOV) {
 						token.parms[0].Mov(token.parms[1]);
 					}
+					else if(token.cmd == Commands.MOD) {
+						token.parms[0].Mod(token.parms[1]);
+					}
 					else if(token.cmd == Commands.PUSH) {
 						args.Add(token.parms[0]);
 					}
@@ -131,6 +152,18 @@ namespace AsmScript
 						}
 
 						args.Clear();
+					}
+					else if(token.cmd == Commands.NATIVE) {
+						Assembly a = Assembly.LoadFile(System.Environment.CurrentDirectory + "\\" + token.parms[0].ToStr());
+
+						foreach (var t in a.GetTypes()) {
+							MethodInfo method = t.GetMethod(token.parms[1].ToStr());
+
+							if (method == null) continue;
+
+							var instance = Activator.CreateInstance(t);
+							return (Object)method.Invoke(instance, new object[] { args });
+						}
 					}
 					else if(token.cmd == Commands.RET) {
 						if (token.parms.Count == 0) {
