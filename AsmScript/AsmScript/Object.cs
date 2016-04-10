@@ -27,6 +27,37 @@ namespace AsmScript {
 			throw new NotImplementedException();
 		}
 
+		public virtual bool JE(Object Other) {
+			throw new NotImplementedException();
+		}
+		public virtual bool JB(Object Other) {
+			throw new NotImplementedException();
+		}
+		public virtual bool JA(Object Other) {
+			throw new NotImplementedException();
+		}
+		public virtual bool JNE(Object Other) {
+			throw new NotImplementedException();
+		}
+		public virtual bool JNB(Object Other) {
+			throw new NotImplementedException();
+		}
+		public virtual bool JNA(Object Other) {
+			throw new NotImplementedException();
+		}
+		public virtual bool JBE(Object Other) {
+			throw new NotImplementedException();
+		}
+		public virtual bool JAE(Object Other) {
+			throw new NotImplementedException();
+		}
+		public virtual bool JNBE(Object Other) {
+			throw new NotImplementedException();
+		}
+		public virtual bool JNAE(Object Other) {
+			throw new NotImplementedException();
+		}
+
 		public virtual string ToStr() {
 			return Name;
 		}
@@ -66,6 +97,37 @@ namespace AsmScript {
 		public override void Mod(Object Other) {
 			if (Other is IntegerObject || Other is RealObject)
 				Value %= Other.ToInt();
+		}
+
+		public override bool JE(Object Other) {
+			return (Value == Other.ToInt());
+		}
+		public override bool JB(Object Other) {
+			return (Value < Other.ToInt());
+		}
+		public override bool JA(Object Other) {
+			return (Value > Other.ToInt());
+		}
+		public override bool JNE(Object Other) {
+			return (Value != Other.ToInt());
+		}
+		public override bool JNB(Object Other) {
+			return !(Value < Other.ToInt());
+		}
+		public override bool JNA(Object Other) {
+			return !(Value > Other.ToInt());
+		}
+		public override bool JBE(Object Other) {
+			return (Value <= Other.ToInt());
+		}
+		public override bool JAE(Object Other) {
+			return (Value >= Other.ToInt());
+		}
+		public override bool JNBE(Object Other) {
+			return !(Value <= Other.ToInt());
+		}
+		public override bool JNAE(Object Other) {
+			return !(Value >= Other.ToInt());
 		}
 
 		public override string ToStr() {
@@ -109,6 +171,37 @@ namespace AsmScript {
 				Value %= Other.ToInt();
 		}
 
+		public override bool JE(Object Other) {
+			return (Value == Other.ToReal());
+		}
+		public override bool JB(Object Other) {
+			return (Value < Other.ToReal());
+		}
+		public override bool JA(Object Other) {
+			return (Value > Other.ToReal());
+		}
+		public override bool JNE(Object Other) {
+			return (Value != Other.ToReal());
+		}
+		public override bool JNB(Object Other) {
+			return !(Value < Other.ToReal());
+		}
+		public override bool JNA(Object Other) {
+			return !(Value > Other.ToReal());
+		}
+		public override bool JBE(Object Other) {
+			return (Value <= Other.ToReal());
+		}
+		public override bool JAE(Object Other) {
+			return (Value >= Other.ToReal());
+		}
+		public override bool JNBE(Object Other) {
+			return !(Value <= Other.ToReal());
+		}
+		public override bool JNAE(Object Other) {
+			return !(Value >= Other.ToReal());
+		}
+
 		public override string ToStr() {
 			return Value.ToString();
 		}
@@ -130,6 +223,14 @@ namespace AsmScript {
 		}
 		public override void Add(Object Other) {
 			Value += Other.ToStr();
+		}
+
+		public override bool JE(Object Other) {
+			return (Value == Other.ToStr());
+		}
+
+		public override bool JNE(Object Other) {
+			return (Value != Other.ToStr());
 		}
 
 		public override string ToStr() {

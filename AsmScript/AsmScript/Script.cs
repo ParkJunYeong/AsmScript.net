@@ -26,11 +26,15 @@ namespace AsmScript
 
 			int State = 0; // 0 : NONE, 1 : FUNC
 			AsmFunction temp = new AsmFunction();
+			int func_start = 0;
 
-			foreach (Token token in tokens) {
+			for (int m = 0; m < tokens.Count; m++) {
+				var token = tokens[m];
+
 				if (token.cmd == Commands.FUNC) {
 					if (State == 0) {
 						State = 1;
+						func_start = m;
 
 						temp.Name = token.parms[0].Name;
 						continue;
@@ -42,6 +46,13 @@ namespace AsmScript
 						temp = new AsmFunction();
 
 						State = 0;
+						continue;
+					}
+				}
+				else if(token.value.Last() == ':') {
+					if(State == 1) {
+						temp.Labels.Add(token.value.Substring(0, token.value.Length - 1), m - func_start - temp.Labels.Count);
+
 						continue;
 					}
 				}
@@ -89,10 +100,13 @@ namespace AsmScript
 		public Object RunCode(Function function, List<Object> parms = null) {
 			if(function is AsmFunction) {
 				List<Object> args = new List<Object>();
-
 				List<Object> vars = new List<Object>();
 
-				foreach(var token in (function as AsmFunction).Code) {
+				Object cmp1 = null, cmp2 = null;
+				
+				for (int m = 0; m < (function as AsmFunction).Code.Count; m++) {
+					var token = ((AsmFunction)function).Code[m];
+
 					if(token.cmd == Commands.VARINT) {
 						vars.Add(new IntegerObject() { Name = token.parms[0].Name });
 
@@ -123,7 +137,127 @@ namespace AsmScript
 						}
 					}
 
-					if(token.cmd == Commands.ADD) {
+					if (token.cmd == Commands.JMP) {
+						int k = 0;
+
+						if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
+							m = k - 1;
+
+							token = ((AsmFunction)function).Code[m];
+						}
+					}
+					else if (token.cmd == Commands.JE) {
+						if (cmp1.JE(cmp2)) {
+							int k = 0;
+
+							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
+								m = k - 1;
+
+								token = ((AsmFunction)function).Code[m];
+							}
+						}
+					}
+					else if (token.cmd == Commands.JB) {
+						if (cmp1.JB(cmp2)) {
+							int k = 0;
+
+							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
+								m = k - 1;
+
+								token = ((AsmFunction)function).Code[m];
+							}
+						}
+					}
+					else if (token.cmd == Commands.JA) {
+						if (cmp1.JA(cmp2)) {
+							int k = 0;
+
+							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
+								m = k - 1;
+
+								token = ((AsmFunction)function).Code[m];
+							}
+						}
+					}
+					else if (token.cmd == Commands.JNE) {
+						if (cmp1.JNE(cmp2)) {
+							int k = 0;
+
+							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
+								m = k - 1;
+
+								token = ((AsmFunction)function).Code[m];
+							}
+						}
+					}
+					else if (token.cmd == Commands.JNB) {
+						if (cmp1.JNB(cmp2)) {
+							int k = 0;
+
+							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
+								m = k - 1;
+
+								token = ((AsmFunction)function).Code[m];
+							}
+						}
+					}
+					else if (token.cmd == Commands.JNA) {
+						if (cmp1.JNA(cmp2)) {
+							int k = 0;
+
+							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
+								m = k - 1;
+
+								token = ((AsmFunction)function).Code[m];
+							}
+						}
+					}
+					else if (token.cmd == Commands.JBE) {
+						if (cmp1.JBE(cmp2)) {
+							int k = 0;
+
+							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
+								m = k - 1;
+
+								token = ((AsmFunction)function).Code[m];
+							}
+						}
+					}
+					else if (token.cmd == Commands.JAE) {
+						if (cmp1.JAE(cmp2)) {
+							int k = 0;
+
+							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
+								m = k - 1;
+
+								token = ((AsmFunction)function).Code[m];
+							}
+						}
+					}
+					else if (token.cmd == Commands.JNBE) {
+						if (cmp1.JNBE(cmp2)) {
+							int k = 0;
+
+							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
+								m = k - 1;
+
+								token = ((AsmFunction)function).Code[m];
+							}
+						}
+					}
+					else if (token.cmd == Commands.JNAE) {
+						if (cmp1.JNAE(cmp2)) {
+							int k = 0;
+
+							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
+								m = k - 1;
+
+								token = ((AsmFunction)function).Code[m];
+							}
+						}
+					}
+
+					if (token.cmd == Commands.ADD) {
 						token.parms[0].Add(token.parms[1]);
 					}
 					else if (token.cmd == Commands.SUB) {
@@ -144,11 +278,15 @@ namespace AsmScript
 					else if(token.cmd == Commands.PUSH) {
 						args.Add(token.parms[0]);
 					}
+					else if(token.cmd == Commands.CMP) {
+						cmp1 = token.parms[0];
+						cmp2 = token.parms[1];
+					}
 					else if(token.cmd == Commands.CALL) {
 						var func = _functions.Find((x) => { return x.Name == token.parms[0].Name; });
 
 						if (func != null) {
-							RunCode(func, args);
+							_efr = RunCode(func, args);
 						}
 
 						args.Clear();
@@ -162,16 +300,16 @@ namespace AsmScript
 							if (method == null) continue;
 
 							var instance = Activator.CreateInstance(t);
+
+
 							return (Object)method.Invoke(instance, new object[] { args });
 						}
 					}
 					else if(token.cmd == Commands.RET) {
 						if (token.parms.Count == 0) {
-							_efr = null;
 							return null;
 						}
 						else {
-							_efr = token.parms[0];
 							return token.parms[0];
 						}
 					}

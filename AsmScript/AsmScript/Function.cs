@@ -27,5 +27,6 @@ namespace AsmScript
 
 	public class AsmFunction : Function {
 		public List<Token> Code = new List<Token>();
+		public Dictionary<string, int> Labels = new Dictionary<string, int>();
 	}
 }

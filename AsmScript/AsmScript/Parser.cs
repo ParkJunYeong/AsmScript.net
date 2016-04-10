@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace AsmScript {
 	public enum Commands {
+		NONE,
+
 		PUSH,
 		CALL,
+
+		JMP,
 
 		RET,
 
@@ -27,10 +31,23 @@ namespace AsmScript {
 
 		IMPORT,
 		NATIVE,
+
+		CMP,
+		JE,
+		JB,
+		JA,
+		JNE,
+		JNB,
+		JNA,
+		JBE,
+		JAE,
+		JNBE,
+		JNAE
 	}
 
 	public struct Token {
 		public Commands cmd;
+		public string value;
 
 		public List<Object> parms;
 	}
@@ -57,6 +74,8 @@ namespace AsmScript {
 					case "push": token.cmd = Commands.PUSH; break;
 					case "call": token.cmd = Commands.CALL; break;
 
+					case "jmp": token.cmd = Commands.JMP; break;
+
 					case "ret": token.cmd = Commands.RET; break;
 
 					case "mov": token.cmd = Commands.MOV; break;
@@ -75,7 +94,20 @@ namespace AsmScript {
 
 					case "import": token.cmd = Commands.IMPORT; break;
 					case "native": token.cmd = Commands.NATIVE; break;
+
+					case "cmp": token.cmd = Commands.CMP; break;
+					case "je": token.cmd = Commands.JE; break;
+					case "jb": token.cmd = Commands.JB; break;
+					case "ja": token.cmd = Commands.JA; break;
+					case "jne": token.cmd = Commands.JNE; break;
+					case "jnb": token.cmd = Commands.JNB; break;
+					case "jna": token.cmd = Commands.JNA; break;
+					case "jbe": token.cmd = Commands.JBE; break;
+					case "jae": token.cmd = Commands.JAE; break;
+					case "jnbe": token.cmd = Commands.JNBE; break;
+					case "jnae": token.cmd = Commands.JNAE; break;
 				}
+				token.value = lines[0];
 
 				if(arg != string.Empty) {
 					foreach (var it in arg.Split(',')) {
