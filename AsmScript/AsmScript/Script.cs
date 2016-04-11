@@ -294,16 +294,18 @@ namespace AsmScript
 					else if(token.cmd == Commands.NATIVE) {
 						Assembly a = Assembly.LoadFile(System.Environment.CurrentDirectory + "\\" + token.parms[0].ToStr());
 
-						foreach (var t in a.GetTypes()) {
-							MethodInfo method = t.GetMethod(token.parms[1].ToStr());
+						string[] cls = token.parms[1].ToStr().Split('.');
 
-							if (method == null) continue;
+						var t = a.GetType(cls[cls.Length - 2]);
 
-							var instance = Activator.CreateInstance(t);
+						MethodInfo method = t.GetMethod(cls[cls.Length - 1]);
+
+						if (method == null) continue;
+
+						var instance = Activator.CreateInstance(t);
 
 
-							return (Object)method.Invoke(instance, new object[] { args });
-						}
+						return (Object)method.Invoke(instance, new object[] { args });
 					}
 					else if(token.cmd == Commands.RET) {
 						if (token.parms.Count == 0) {
