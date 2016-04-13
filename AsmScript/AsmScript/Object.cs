@@ -75,27 +75,21 @@ namespace AsmScript {
 		public long Value;
 
 		public override void Mov(Object Other) {
-			if (Other is IntegerObject || Other is RealObject)
 				Value = Other.ToInt();
 		}
 		public override void Add(Object Other) {
-			if (Other is IntegerObject || Other is RealObject)
 				Value += Other.ToInt();
 		}
 		public override void Sub(Object Other) {
-			if (Other is IntegerObject || Other is RealObject)
 				Value -= Other.ToInt();
 		}
 		public override void Mul(Object Other) {
-			if (Other is IntegerObject || Other is RealObject)
 				Value *= Other.ToInt();
 		}
 		public override void Div(Object Other) {
-			if (Other is IntegerObject || Other is RealObject)
 				Value /= Other.ToInt();
 		}
 		public override void Mod(Object Other) {
-			if (Other is IntegerObject || Other is RealObject)
 				Value %= Other.ToInt();
 		}
 
@@ -147,27 +141,21 @@ namespace AsmScript {
 		public double Value;
 
 		public override void Mov(Object Other) {
-			if (Other is IntegerObject || Other is RealObject)
 				Value = Other.ToReal();
 		}
 		public override void Add(Object Other) {
-			if (Other is IntegerObject || Other is RealObject)
 				Value += Other.ToReal();
 		}
 		public override void Sub(Object Other) {
-			if (Other is IntegerObject || Other is RealObject)
 				Value -= Other.ToReal();
 		}
 		public override void Mul(Object Other) {
-			if (Other is IntegerObject || Other is RealObject)
 				Value *= Other.ToReal();
 		}
 		public override void Div(Object Other) {
-			if (Other is IntegerObject || Other is RealObject)
 				Value /= Other.ToReal();
 		}
 		public override void Mod(Object Other) {
-			if (Other is IntegerObject || Other is RealObject)
 				Value %= Other.ToReal();
 		}
 

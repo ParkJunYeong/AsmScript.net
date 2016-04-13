@@ -150,9 +150,13 @@ namespace AsmScript
 					vars.AddRange((function as AsmFunction).Parent.fields);
 
 				Object cmp1 = null, cmp2 = null;
+
+				List<Token> code = new List<Token>();
+				foreach (Token t in (function as AsmFunction).Code)
+					code.Add((Token)t.Clone());
 				
-				for (int m = 0; m < (function as AsmFunction).Code.Count; m++) {
-					var token = ((AsmFunction)function).Code[m];
+				for (int m = 0; m < code.Count; m++) {
+					var token = code[m];
 
 					if(token.cmd == Commands.VARINT) {
 						vars.Add(new IntegerObject() { Name = token.parms[0].Name });
@@ -181,7 +185,9 @@ namespace AsmScript
 					}
 					else {
 						for(int i = 0; i < token.parms.Count; i++) {
-							string[] ts = token.parms[i].ToStr().Split(':');
+							if ((token.parms[i] is IntegerObject) || (token.parms[i] is StringObject)) continue;
+
+							string[] ts = token.parms[i].Name.Split(':');
 
 							var v = (ts.Length == 1) ? vars.Find((x) => { return x.Name == ts[0]; }) : (vars.Find((x) => { return x.Name == ts[0]; }) as Class).fields.Find((x) => { return x.Name == ts[1]; });
 
@@ -197,9 +203,11 @@ namespace AsmScript
 						int k = 0;
 
 						if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
-							m = k - 1;
+							m = k - 2;
 
-							token = ((AsmFunction)function).Code[m];
+							token = code[m];
+
+							continue;
 						}
 					}
 					else if (token.cmd == Commands.JE) {
@@ -207,9 +215,11 @@ namespace AsmScript
 							int k = 0;
 
 							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
-								m = k - 1;
+								m = k - 2;
 
-								token = ((AsmFunction)function).Code[m];
+								token = code[m];
+
+								continue;
 							}
 						}
 					}
@@ -218,9 +228,11 @@ namespace AsmScript
 							int k = 0;
 
 							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
-								m = k - 1;
+								m = k - 2;
 
-								token = ((AsmFunction)function).Code[m];
+								token = code[m];
+
+								continue;
 							}
 						}
 					}
@@ -229,9 +241,11 @@ namespace AsmScript
 							int k = 0;
 
 							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
-								m = k - 1;
+								m = k - 2;
 
-								token = ((AsmFunction)function).Code[m];
+								token = code[m];
+
+								continue;
 							}
 						}
 					}
@@ -240,9 +254,11 @@ namespace AsmScript
 							int k = 0;
 
 							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
-								m = k - 1;
+								m = k - 2;
 
-								token = ((AsmFunction)function).Code[m];
+								token = code[m];
+
+								continue;
 							}
 						}
 					}
@@ -251,9 +267,11 @@ namespace AsmScript
 							int k = 0;
 
 							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
-								m = k - 1;
+								m = k - 2;
 
-								token = ((AsmFunction)function).Code[m];
+								token = code[m];
+
+								continue;
 							}
 						}
 					}
@@ -262,9 +280,11 @@ namespace AsmScript
 							int k = 0;
 
 							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
-								m = k - 1;
+								m = k - 2;
 
-								token = ((AsmFunction)function).Code[m];
+								token = code[m];
+
+								continue;
 							}
 						}
 					}
@@ -273,9 +293,11 @@ namespace AsmScript
 							int k = 0;
 
 							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
-								m = k - 1;
+								m = k - 2;
 
-								token = ((AsmFunction)function).Code[m];
+								token = code[m];
+
+								continue;
 							}
 						}
 					}
@@ -284,9 +306,11 @@ namespace AsmScript
 							int k = 0;
 
 							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
-								m = k - 1;
+								m = k - 2;
 
-								token = ((AsmFunction)function).Code[m];
+								token = code[m];
+
+								continue;
 							}
 						}
 					}
@@ -295,9 +319,11 @@ namespace AsmScript
 							int k = 0;
 
 							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
-								m = k - 1;
+								m = k - 2;
 
-								token = ((AsmFunction)function).Code[m];
+								token = code[m];
+
+								continue;
 							}
 						}
 					}
@@ -306,9 +332,11 @@ namespace AsmScript
 							int k = 0;
 
 							if ((function as AsmFunction).Labels.TryGetValue(token.parms[0].ToStr(), out k)) {
-								m = k - 1;
+								m = k - 2;
 
-								token = ((AsmFunction)function).Code[m];
+								token = code[m];
+
+								continue;
 							}
 						}
 					}

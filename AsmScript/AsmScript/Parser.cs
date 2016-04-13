@@ -48,11 +48,21 @@ namespace AsmScript {
 		CLASS,
 	}
 
-	public struct Token {
+	public class Token : ICloneable{
 		public Commands cmd;
 		public string value;
 
-		public List<Object> parms;
+		public List<Object> parms = new List<Object>();
+
+		public object Clone() {
+			Token r = new Token();
+			r.cmd = cmd;
+			r.value = value;
+
+			r.parms.AddRange(parms);
+
+			return r;
+		}
 	}
 
 	class Parser {
@@ -71,7 +81,6 @@ namespace AsmScript {
 				arg = arg.Trim();
 
 				Token token = new Token();
-				token.parms = new List<Object>();
 
 				switch(lines[0].ToLower()) {
 					case "push": token.cmd = Commands.PUSH; break;
