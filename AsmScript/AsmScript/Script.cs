@@ -10,6 +10,7 @@ namespace AsmScript
 {
 	public class Script {
 		private List<Function> _functions = new List<Function>();
+		private List<Class> _classes = new List<Class>();
 
 		private Object _efr = null;
 
@@ -24,19 +25,28 @@ namespace AsmScript
 		private void _Load(string filename) {
 			List<Token> tokens = Parser.Tokenization(File.ReadAllLines(filename, Encoding.UTF8));
 
-			int State = 0; // 0 : NONE, 1 : FUNC
+			int State = 0; // 0 : NONE, 1 : FUNC, 2 : CLASS, 3 : CLASS FUNC
 			AsmFunction temp = new AsmFunction();
+			Class cls = new Class() { _impl = this };
 			int func_start = 0;
 
 			for (int m = 0; m < tokens.Count; m++) {
 				var token = tokens[m];
 
 				if (token.cmd == Commands.FUNC) {
-					if (State == 0) {
-						State = 1;
+					if (State == 0 || State == 2) {
+						State = (State == 0) ? 1 : 3;
 						func_start = m;
 
 						temp.Name = token.parms[0].Name;
+						continue;
+					}
+				}
+				else if(token.cmd == Commands.CLASS) {
+					if(State == 0) {
+						State = 2;
+
+						cls.Type = token.parms[0].Name;
 						continue;
 					}
 				}
@@ -44,6 +54,20 @@ namespace AsmScript
 					if (State == 1) {
 						_functions.Add(temp);
 						temp = new AsmFunction();
+
+						State = (State == 1) ? 0 : 2;
+						continue;
+					}
+					else if(State == 3) {
+						cls.functions.Add(temp);
+						temp = new AsmFunction();
+
+						State = (State == 1) ? 0 : 2;
+						continue;
+					}
+					else if(State == 2) {
+						_classes.Add(cls);
+						cls = new Class() { _impl = this };
 
 						State = 0;
 						continue;
@@ -67,7 +91,7 @@ namespace AsmScript
 					continue;
 				}
 
-				if (State == 1) {
+				if (State == 1 || State == 3) {
 					temp.Code.Add(token);
 				}
 			}
@@ -124,6 +148,13 @@ namespace AsmScript
 
 						if (token.parms.Count > 1)
 							vars.Last().Mov(parms[(int)token.parms[1].ToInt() - 1]);
+					}
+					else if(token.cmd == Commands.VARCLASS) {
+						var c = (Class)_classes.Find((x) => { return x.Type == token.parms[0].Name; }).Clone();
+
+						c.Name = token.parms[1].Name;
+
+						vars.Add(c);
 					}
 					else {
 						for(int i = 0; i < token.parms.Count; i++) {
@@ -283,13 +314,24 @@ namespace AsmScript
 						cmp2 = token.parms[1];
 					}
 					else if(token.cmd == Commands.CALL) {
-						var func = _functions.Find((x) => { return x.Name == token.parms[0].Name; });
+						if(token.parms.Count > 1) {
+							var c = (Class)vars.Find((x) => { return x is Class && x.Name == token.parms[0].Name; });
+							var f = c.functions.Find((x) => { return x.Name == token.parms[1].Name; });
 
-						if (func != null) {
-							_efr = RunCode(func, args);
+							if (f != null)
+								_efr = RunCode(f, args);
+
+							args.Clear();
 						}
+						else if(token.parms.Count == 1) {
+							var func = _functions.Find((x) => { return x.Name == token.parms[0].Name; });
 
-						args.Clear();
+							if (func != null) {
+								_efr = RunCode(func, args);
+							}
+
+							args.Clear();
+						}
 					}
 					else if(token.cmd == Commands.NATIVE) {
 						Assembly a = Assembly.LoadFile(System.Environment.CurrentDirectory + "\\" + token.parms[0].ToStr());

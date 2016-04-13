@@ -28,6 +28,7 @@ namespace AsmScript {
 		VARINT,
 		VARREAL,
 		VARSTRING,
+		VARCLASS,
 
 		IMPORT,
 		NATIVE,
@@ -42,7 +43,9 @@ namespace AsmScript {
 		JBE,
 		JAE,
 		JNBE,
-		JNAE
+		JNAE,
+
+		CLASS,
 	}
 
 	public struct Token {
@@ -91,6 +94,7 @@ namespace AsmScript {
 					case "varint": token.cmd = Commands.VARINT; break;
 					case "varreal": token.cmd = Commands.VARREAL; break;
 					case "varstring": token.cmd = Commands.VARSTRING; break;
+					case "varclass": token.cmd = Commands.VARCLASS; break;
 
 					case "import": token.cmd = Commands.IMPORT; break;
 					case "native": token.cmd = Commands.NATIVE; break;
@@ -106,6 +110,8 @@ namespace AsmScript {
 					case "jae": token.cmd = Commands.JAE; break;
 					case "jnbe": token.cmd = Commands.JNBE; break;
 					case "jnae": token.cmd = Commands.JNAE; break;
+
+					case "class": token.cmd = Commands.CLASS; break;
 				}
 				token.value = lines[0];
 
