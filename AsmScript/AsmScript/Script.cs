@@ -158,6 +158,8 @@ namespace AsmScript
 				for (int m = 0; m < code.Count; m++) {
 					var token = code[m];
 
+					if (token.value.Length > 0 && token.value[0] == '#') continue;
+
 					if(token.cmd == Commands.VARINT) {
 						vars.Add(new IntegerObject() { Name = token.parms[0].Name });
 
