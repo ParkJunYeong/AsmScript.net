@@ -59,6 +59,7 @@ namespace AsmScript
 						continue;
 					}
 					else if(State == 3) {
+						temp.Parent = cls;
 						cls.functions.Add(temp);
 						temp = new AsmFunction();
 
@@ -82,7 +83,7 @@ namespace AsmScript
 				}
 				else if(token.cmd == Commands.IMPORT) {
 					if(State == 0) {
-						if (token.parms[0].ToStr().LastIndexOf('.') != -1 && System.IO.Path.GetExtension(token.parms[0].ToStr()) == ".dll")
+						if (token.parms[0].ToStr().LastIndexOf('.') != -1 && System.IO.Path.GetExtension(token.parms[0].ToStr()) == ".asm")
 							_Load(token.parms[0].ToStr());
 						else
 							_Load(token.parms[0].ToStr() + ".asm");
@@ -91,8 +92,27 @@ namespace AsmScript
 					continue;
 				}
 
+
 				if (State == 1 || State == 3) {
 					temp.Code.Add(token);
+				}
+				else if(State == 2) {
+					if (token.cmd == Commands.VARINT) {
+						cls.fields.Add(new IntegerObject() { Name = token.parms[0].Name });
+					}
+					else if (token.cmd == Commands.VARREAL) {
+						cls.fields.Add(new RealObject() { Name = token.parms[0].Name });
+					}
+					else if (token.cmd == Commands.VARSTRING) {
+						cls.fields.Add(new StringObject() { Name = token.parms[0].Name });
+					}
+					else if (token.cmd == Commands.VARCLASS) {
+						var c = (Class)_classes.Find((x) => { return x.Type == token.parms[0].Name; }).Clone();
+
+						c.Name = token.parms[1].Name;
+
+						cls.fields.Add(c);
+					}
 				}
 			}
 		}
@@ -126,6 +146,9 @@ namespace AsmScript
 				List<Object> args = new List<Object>();
 				List<Object> vars = new List<Object>();
 
+				if ((function as AsmFunction).Parent != null)
+					vars.AddRange((function as AsmFunction).Parent.fields);
+
 				Object cmp1 = null, cmp2 = null;
 				
 				for (int m = 0; m < (function as AsmFunction).Code.Count; m++) {
@@ -158,7 +181,9 @@ namespace AsmScript
 					}
 					else {
 						for(int i = 0; i < token.parms.Count; i++) {
-							var v = vars.Find((x) => { return x.Name == token.parms[i].Name; });
+							string[] ts = token.parms[i].ToStr().Split(':');
+
+							var v = (ts.Length == 1) ? vars.Find((x) => { return x.Name == ts[0]; }) : (vars.Find((x) => { return x.Name == ts[0]; }) as Class).fields.Find((x) => { return x.Name == ts[1]; });
 
 							if (v != null) {
 								token.parms[i] = v;
@@ -314,17 +339,19 @@ namespace AsmScript
 						cmp2 = token.parms[1];
 					}
 					else if(token.cmd == Commands.CALL) {
-						if(token.parms.Count > 1) {
-							var c = (Class)vars.Find((x) => { return x is Class && x.Name == token.parms[0].Name; });
-							var f = c.functions.Find((x) => { return x.Name == token.parms[1].Name; });
+						string[] call_token = token.parms[0].ToStr().Split(':');
+
+						if(call_token.Length == 2) {
+							var c = (Class)vars.Find((x) => { return x is Class && x.Name == call_token[0]; });
+							var f = c.functions.Find((x) => { return x.Name == call_token[1]; });
 
 							if (f != null)
 								_efr = RunCode(f, args);
 
 							args.Clear();
 						}
-						else if(token.parms.Count == 1) {
-							var func = _functions.Find((x) => { return x.Name == token.parms[0].Name; });
+						else if(call_token.Length == 1) {
+							var func = _functions.Find((x) => { return x.Name == call_token[0]; });
 
 							if (func != null) {
 								_efr = RunCode(func, args);

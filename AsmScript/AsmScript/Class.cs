@@ -12,6 +12,11 @@ namespace AsmScript {
 			get; set;
 		}
 
+		public List<Object> fields {
+			get;
+			private set;
+		} = new List<Object>();
+
 		public List<Function> functions {
 			get;
 			private set;
