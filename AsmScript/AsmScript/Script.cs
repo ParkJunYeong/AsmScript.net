@@ -113,6 +113,9 @@ namespace AsmScript
 
 						cls.fields.Add(c);
 					}
+					else if(token.cmd == Commands.VAROBJ) {
+						cls.fields.Add(new NetObject() { Name = token.parms[0].Name });
+					}
 				}
 			}
 		}
@@ -184,6 +187,15 @@ namespace AsmScript
 						c.Name = token.parms[1].Name;
 
 						vars.Add(c);
+
+						if (token.parms.Count > 1)
+							vars.Last().Mov(parms[(int)token.parms[1].ToInt() - 1]);
+					}
+					else if(token.cmd == Commands.VAROBJ) {
+						vars.Add(new NetObject() { Name = token.parms[0].Name });
+
+						if (token.parms.Count > 1)
+							vars.Last().Mov(parms[(int)token.parms[1].ToInt() - 1]);
 					}
 					else {
 						for(int i = 0; i < token.parms.Count; i++) {
@@ -391,20 +403,25 @@ namespace AsmScript
 						}
 					}
 					else if(token.cmd == Commands.NATIVE) {
-						Assembly a = Assembly.LoadFile(System.Environment.CurrentDirectory + "\\" + token.parms[0].ToStr());
+						if (token.parms[0] is NetObject) {
+							// TODO: Net Object 메소드 구현
+						}
+						else {
+							Assembly a = Assembly.LoadFile(System.Environment.CurrentDirectory + "\\" + token.parms[0].ToStr());
 
-						string[] cls = token.parms[1].ToStr().Split('.');
+							string[] cls = token.parms[1].ToStr().Split('.');
 
-						var t = a.GetType(cls[cls.Length - 2]);
+							var t = a.GetType(cls[cls.Length - 2]);
 
-						MethodInfo method = t.GetMethod(cls[cls.Length - 1]);
+							MethodInfo method = t.GetMethod(cls[cls.Length - 1]);
 
-						if (method == null) continue;
+							if (method == null) continue;
 
-						var instance = Activator.CreateInstance(t);
+							var instance = Activator.CreateInstance(t);
 
 
-						return (Object)method.Invoke(instance, new object[] { args });
+							return (Object)method.Invoke(instance, new object[] { args });
+						}
 					}
 					else if(token.cmd == Commands.RET) {
 						if (token.parms.Count == 0) {

@@ -233,4 +233,39 @@ namespace AsmScript {
 			return Convert.ToDouble(Value);
 		}
 	}
+
+	public class NetObject : Object
+	{
+		public System.Object Value;
+
+		public override void Mov(Object Other)
+		{
+			Value = (Other as NetObject).Value;
+		}
+
+		public override bool JE(Object Other)
+		{
+			return (Value == (Other as NetObject).Value);
+		}
+
+		public override bool JNE(Object Other)
+		{
+			return (Value != (Other as NetObject).Value);
+		}
+
+		public override string ToStr()
+		{
+			return Value.ToString();
+		}
+
+		public override long ToInt()
+		{
+			return Convert.ToInt64(Value);
+		}
+
+		public override double ToReal()
+		{
+			return Convert.ToDouble(Value);
+		}
+	}
 }

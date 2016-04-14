@@ -29,6 +29,7 @@ namespace AsmScript {
 		VARREAL,
 		VARSTRING,
 		VARCLASS,
+		VAROBJ,
 
 		IMPORT,
 		NATIVE,
@@ -104,6 +105,7 @@ namespace AsmScript {
 					case "varreal": token.cmd = Commands.VARREAL; break;
 					case "varstring": token.cmd = Commands.VARSTRING; break;
 					case "varclass": token.cmd = Commands.VARCLASS; break;
+					case "varobj": token.cmd = Commands.VAROBJ; break;
 
 					case "import": token.cmd = Commands.IMPORT; break;
 					case "native": token.cmd = Commands.NATIVE; break;
